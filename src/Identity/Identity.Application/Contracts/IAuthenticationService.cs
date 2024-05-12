@@ -1,9 +1,9 @@
-﻿using Identity.Application.Features.Authentication;
-using Identity.Domain.Enums;
+﻿using Identity.Domain.Enums;
+using Identity.Domain.Models;
 
 namespace Identity.Application.Contracts;
 
 public interface IAuthenticationService
 {
-    Task<RegistrationResult> Register(RegisterDTO registerModel);
+    Task<RegistrationResult> Register(RegisterDto registerModel);
 }

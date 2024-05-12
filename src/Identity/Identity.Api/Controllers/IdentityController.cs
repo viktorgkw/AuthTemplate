@@ -1,5 +1,6 @@
 ﻿using Identity.Application.Features.Authentication;
 using Identity.Domain.Enums;
+using Identity.Domain.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,17 +18,17 @@ public class IdentityController(
     [HttpPost, Route("register")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Register(RegisterDTO model)
+    public async Task<IActionResult> Register(RegisterDto model)
     {
         var result = await _mediator.Send(new RegisterCommand
         {
             Model = model
         });
 
-        return result switch
+        return result.Status switch
         {
-            RegistrationResult.Successful => NoContent(),
-            _ => BadRequest()
+            RegistrationStatus.Successful => NoContent(),
+            _ => BadRequest(result.Message)
         };
     }
 

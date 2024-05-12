@@ -1,15 +1,14 @@
 ﻿using Identity.Application.Contracts;
-using Identity.Application.Features.Authentication;
 using Identity.Domain.Enums;
+using Identity.Domain.Models;
 
 namespace Identity.Infrastructure.Services;
 
 public class AuthenticationService : IAuthenticationService
 {
-    public async Task<RegistrationResult> Register(RegisterDTO registerModel)
+    public async Task<RegistrationResult> Register(RegisterDto registerModel)
     {
-        await Task.Yield();
-
-        return RegistrationResult.Successful;
+        // IUserRepository (add to db)
+        return new RegistrationResult(RegistrationStatus.Successful, "TODO");
     }
 }

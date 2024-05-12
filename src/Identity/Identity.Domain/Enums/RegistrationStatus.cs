@@ -1,6 +1,6 @@
 ﻿namespace Identity.Domain.Enums;
 
-public enum RegistrationResult
+public enum RegistrationStatus
 {
     Failed = 0,
     Successful = 2,
