@@ -1,15 +1,28 @@
 ﻿using Microsoft.OpenApi.Models;
-using System.Reflection;
+//using SharedKernel.Http;
 
 namespace Identity.Api;
 
 public static class WebApiServiceRegistration
 {
-    public static IServiceCollection AddWebApiServices(this IServiceCollection services)
+    public static IServiceCollection AddWebApiServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddControllers();
         services.AddAndConfigureSwagger();
-        services.AddAutoMapper(Assembly.GetExecutingAssembly());
+        services.ConfigurePostgreHealthChecks(configuration);
+
+        //services
+        //    .AddExceptionHandler<GlobalExceptionHandler>()
+        //    .AddProblemDetails();
+        
+        return services;
+    }
+
+    private static IServiceCollection ConfigurePostgreHealthChecks(this IServiceCollection services, IConfiguration configuration)
+    {
+        services
+            .AddHealthChecks()
+            .AddNpgSql(configuration.GetConnectionString("PostgreConnectionString"));
 
         return services;
     }

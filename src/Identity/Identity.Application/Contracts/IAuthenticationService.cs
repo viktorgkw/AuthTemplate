@@ -1,5 +1,4 @@
-﻿using Identity.Domain.Enums;
-using Identity.Domain.Models;
+﻿using Identity.Application.Features.Authentication;
 
 namespace Identity.Application.Contracts;
 

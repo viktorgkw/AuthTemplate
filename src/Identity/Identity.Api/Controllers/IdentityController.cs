@@ -1,13 +1,10 @@
 ﻿using Identity.Application.Features.Authentication;
-using Identity.Domain.Enums;
-using Identity.Domain.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Identity.Api.Controllers;
 
-[ApiController]
-[Route("[controller]")]
+[ApiController, Route("[controller]")]
 public class IdentityController(
     ILogger<IdentityController> logger,
     IMediator mediator) : ControllerBase
