@@ -17,6 +17,12 @@ public class IdentityProfile : Profile
                 src => Guid.NewGuid().ToString())
             .ForMember(
                 dest => dest.PhoneNumber,
-                src => src.MapFrom(x => x.PhoneNumber ?? null));
+                src => src.MapFrom(x => x.PhoneNumber ?? null))
+            .ForMember(
+                dest => dest.Address,
+                src => src.Ignore())
+            .ForMember(
+                dest => dest.IsActive,
+                src => src.MapFrom(x => true));
     }
 }
