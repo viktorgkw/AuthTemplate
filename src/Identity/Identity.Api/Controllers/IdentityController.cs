@@ -24,7 +24,7 @@ public class IdentityController(
 
         return result.Status switch
         {
-            RegistrationStatus.Successful => NoContent(),
+            RegistrationStatus.Successful => Ok(result.Message),
             _ => BadRequest(result.Message)
         };
     }
