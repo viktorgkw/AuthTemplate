@@ -21,7 +21,8 @@ public class RegisterDto
 public enum RegistrationStatus
 {
     Failed = 0,
-    Successful = 2,
+    EmailInUse = 2,
+    Successful = 4
 }
 
 public record RegistrationResult(RegistrationStatus Status, string Message);
@@ -37,5 +38,5 @@ public class RegisterCommandHandler(IAuthenticationService authenticationService
     private readonly IAuthenticationService _authenticationService = authenticationService;
 
     public async Task<RegistrationResult> Handle(RegisterCommand request, CancellationToken cancellationToken)
-        => await _authenticationService.Register(request.Model);
+        => await _authenticationService.Register(request.Model, cancellationToken);
 }

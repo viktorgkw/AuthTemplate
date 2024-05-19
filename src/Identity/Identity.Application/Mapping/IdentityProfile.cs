@@ -11,6 +11,12 @@ public class IdentityProfile : Profile
         CreateMap<RegisterDto, ApplicationUser>()
             .ForMember(
                 dest => dest.UserName,
-                src => src.MapFrom(x => x.Username));
+                src => src.MapFrom(x => x.Username))
+            .ForMember(
+                dest => dest.SecurityStamp,
+                src => Guid.NewGuid().ToString())
+            .ForMember(
+                dest => dest.PhoneNumber,
+                src => src.MapFrom(x => x.PhoneNumber ?? null));
     }
 }
