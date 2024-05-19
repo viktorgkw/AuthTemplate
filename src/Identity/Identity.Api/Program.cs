@@ -31,5 +31,6 @@ app.MapHealthChecks("/health", new HealthCheckOptions
 });
 
 await app.ApplyMigrations();
+await app.InitializeRoles();
 
 app.Run();

@@ -3,7 +3,6 @@ using Identity.Application.Contracts;
 using Identity.Application.Features.Authentication;
 using Identity.Domain.Constants;
 using Identity.Domain.Entities;
-using Identity.Domain.Enums;
 using Microsoft.AspNetCore.Identity;
 using System.Data;
 using System.Text.RegularExpressions;
@@ -34,7 +33,7 @@ public partial class AuthenticationService(
         if (errors.Count != 0)
             return new RegistrationResult(RegistrationStatus.Failed, string.Join("\n", errors));
 
-        await _userManager.AddToRoleAsync(user, ApplicationRoles.User.ToString());
+        await _userManager.AddToRoleAsync(user, ApplicationRoles.User);
 
         return new RegistrationResult(RegistrationStatus.Successful, RegistrationMessageConstants.SuccessfulRegistration);
     }
