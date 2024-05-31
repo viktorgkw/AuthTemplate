@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using Identity.Application.Contracts;
 using Identity.Application.Features.Authentication;
-using Identity.Domain.Configuration;
 using Identity.Domain.Constants;
 using Identity.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
+using SharedKernel.Configuration;
 using System.Data;
 using System.Security.Claims;
 using System.Text;

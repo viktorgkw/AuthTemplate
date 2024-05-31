@@ -25,10 +25,7 @@ public partial class Initial : Migration
                 ClaimType = table.Column<string>(type: "text", nullable: true),
                 ClaimValue = table.Column<string>(type: "text", nullable: true)
             },
-            constraints: table =>
-            {
-                table.PrimaryKey("PK_role_claims", x => x.Id);
-            });
+            constraints: table => table.PrimaryKey("PK_role_claims", x => x.Id));
 
         migrationBuilder.CreateTable(
             name: "roles",
@@ -40,10 +37,7 @@ public partial class Initial : Migration
                 NormalizedName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                 ConcurrencyStamp = table.Column<string>(type: "text", nullable: true)
             },
-            constraints: table =>
-            {
-                table.PrimaryKey("PK_roles", x => x.Id);
-            });
+            constraints: table => table.PrimaryKey("PK_roles", x => x.Id));
 
         migrationBuilder.CreateTable(
             name: "user_claims",
@@ -56,10 +50,7 @@ public partial class Initial : Migration
                 ClaimType = table.Column<string>(type: "text", nullable: true),
                 ClaimValue = table.Column<string>(type: "text", nullable: true)
             },
-            constraints: table =>
-            {
-                table.PrimaryKey("PK_user_claims", x => x.Id);
-            });
+            constraints: table => table.PrimaryKey("PK_user_claims", x => x.Id));
 
         migrationBuilder.CreateTable(
             name: "users",
@@ -85,10 +76,7 @@ public partial class Initial : Migration
                 LockoutEnabled = table.Column<bool>(type: "boolean", nullable: false),
                 AccessFailedCount = table.Column<int>(type: "integer", nullable: false)
             },
-            constraints: table =>
-            {
-                table.PrimaryKey("PK_users", x => x.Id);
-            });
+            constraints: table => table.PrimaryKey("PK_users", x => x.Id));
 
         migrationBuilder.CreateTable(
             name: "AspNetRoleClaims",

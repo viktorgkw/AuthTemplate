@@ -1,4 +1,4 @@
-﻿namespace Identity.Domain.Configuration;
+﻿namespace SharedKernel.Configuration;
 
 public class JwtConfig
 {

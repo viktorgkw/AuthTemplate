@@ -9,16 +9,13 @@ var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 var configuration = builder.Configuration;
 
-services.AddWebApiServices(configuration);
 services.AddInfrastructureServices(configuration);
 services.AddApplicationServices();
+services.AddWebApiServices(configuration);
 
 var app = builder.Build();
 
 app.UseExceptionHandler();
-
-app.UseSwagger();
-app.UseSwaggerUI();
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -30,7 +27,10 @@ app.MapHealthChecks("/health", new HealthCheckOptions
     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
 });
 
-await app.ApplyMigrations();
-await app.InitializeRoles();
+if (app.Environment.IsDevelopment())
+{
+    await app.ApplyMigrations();
+    await app.InitializeRoles();
+}
 
 app.Run();
