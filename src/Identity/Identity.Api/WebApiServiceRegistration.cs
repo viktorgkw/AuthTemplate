@@ -1,5 +1,5 @@
 ﻿using Microsoft.OpenApi.Models;
-//using SharedKernel.Http;
+using SharedKernel.Http;
 
 namespace Identity.Api;
 
@@ -11,10 +11,10 @@ public static class WebApiServiceRegistration
         services.AddAndConfigureSwagger();
         services.ConfigurePostgreHealthChecks(configuration);
 
-        //services
-        //    .AddExceptionHandler<GlobalExceptionHandler>()
-        //    .AddProblemDetails();
-        
+        services
+            .AddExceptionHandler<GlobalExceptionHandler>()
+            .AddProblemDetails();
+
         return services;
     }
 

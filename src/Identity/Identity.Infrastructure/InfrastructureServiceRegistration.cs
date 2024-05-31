@@ -1,4 +1,5 @@
 ﻿using Identity.Application.Contracts;
+using Identity.Domain.Configuration;
 using Identity.Domain.Configuration.Identity;
 using Identity.Domain.Entities;
 using Identity.Infrastructure.Persistence;
@@ -39,6 +40,12 @@ public static class InfrastructureServiceRegistration
 
     private static IServiceCollection ConfigureIdentity(this IServiceCollection services, IConfiguration configuration)
     {
+        var jwtConfig = configuration
+            .GetSection(nameof(JwtConfig))
+            .Get<JwtConfig>();
+
+        services.AddSingleton(jwtConfig);
+
         var identityConfig = configuration
             .GetSection(nameof(IdentityConfiguration))
             .Get<IdentityConfiguration>();

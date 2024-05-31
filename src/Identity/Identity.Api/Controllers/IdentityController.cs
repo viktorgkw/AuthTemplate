@@ -32,9 +32,15 @@ public class IdentityController(
     [HttpPost, Route("login")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Login()
+    public async Task<IActionResult> Login(LoginDto model)
     {
-        await Task.Yield();
-        return Ok();
+        var result = await _mediator.Send(new LoginQuery
+        {
+            Model = model
+        });
+
+        return result.Token is null
+            ? BadRequest(result.Message)
+            : Ok(result.Token);
     }
 }

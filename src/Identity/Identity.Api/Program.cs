@@ -15,7 +15,7 @@ services.AddApplicationServices();
 
 var app = builder.Build();
 
-//app.UseExceptionHandler();
+app.UseExceptionHandler();
 
 app.UseSwagger();
 app.UseSwaggerUI();
