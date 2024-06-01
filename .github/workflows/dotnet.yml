@@ -14,18 +14,27 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
+
       - name: Restore dependencies
-        run: dotnet restore
+        run: |
+          dotnet restore src/SharedKernel/SharedKernel/SharedKernel.csproj
+          dotnet restore src/Identity/Identity.Domain/Identity.Domain.csproj
+          dotnet restore src/Identity/Identity.Application/Identity.Application.csproj
+          dotnet restore src/Identity/Identity.Infrastructure/Identity.Infrastructure.csproj
+          dotnet restore src/Identity/Identity.Api/Identity.Api.csproj
+
       - name: Build
         run: |
-          dotnet build --no-restore ~/src/SharedKernel/SharedKernel/SharedKernel.csproj
-          dotnet build --no-restore ~/src/Identity/Identity.Domain/Identity.Domain.csproj
-          dotnet build --no-restore ~/src/Identity/Identity.Application/Identity.Application.csproj
-          dotnet build --no-restore ~/src/Identity/Identity.Infrastructure/Identity.Infrastructure.csproj
-          dotnet build --no-restore ~/src/Identity/Identity.Api/Identity.Api.csproj
+          dotnet build --no-restore src/SharedKernel/SharedKernel/SharedKernel.csproj
+          dotnet build --no-restore src/Identity/Identity.Domain/Identity.Domain.csproj
+          dotnet build --no-restore src/Identity/Identity.Application/Identity.Application.csproj
+          dotnet build --no-restore src/Identity/Identity.Infrastructure/Identity.Infrastructure.csproj
+          dotnet build --no-restore src/Identity/Identity.Api/Identity.Api.csproj
+
       # - name: Test
       #   run: dotnet test --no-build --verbosity normal **/*.csproj
