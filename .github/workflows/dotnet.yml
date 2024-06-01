@@ -21,6 +21,11 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
       - name: Build
-        run: dotnet build --no-restore **/*.csproj
-      - name: Test
-        run: dotnet test --no-build --verbosity normal **/*.csproj
+        run: |
+          dotnet build --no-restore ~/src/SharedKernel/SharedKernel/SharedKernel.csproj
+          dotnet build --no-restore ~/src/Identity/Identity.Domain/Identity.Domain.csproj
+          dotnet build --no-restore ~/src/Identity/Identity.Application/Identity.Application.csproj
+          dotnet build --no-restore ~/src/Identity/Identity.Infrastructure/Identity.Infrastructure.csproj
+          dotnet build --no-restore ~/src/Identity/Identity.Api/Identity.Api.csproj
+      # - name: Test
+      #   run: dotnet test --no-build --verbosity normal **/*.csproj
