@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using SharedKernel.Configuration;
 using SharedKernel.Http;
+using SharedKernel.MediatR;
 using SharedKernel.Models.Interfaces;
 using System.Reflection;
 using System.Text;
@@ -12,14 +14,22 @@ namespace SharedKernel.Extensions;
 
 public static class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Adds AutoMapper and MediatR with <see cref="LoggingBehavior{TRequest, TResponse}"/> that logs the request and response with the elapsed seconds.
+    /// </summary>
     public static IServiceCollection AddMapperAndMediatR(this IServiceCollection services, Assembly assembly)
     {
         services.AddAutoMapper(assembly);
         services.AddMediatR(x => x.RegisterServicesFromAssembly(assembly));
 
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
+
         return services;
     }
 
+    /// <summary>
+    /// Configures the <see cref="JwtConfig"/> and adds Authentication with JWT Bearer token.
+    /// </summary>
     public static IServiceCollection AddSecurity(this IServiceCollection services, IConfiguration configuration)
     {
         var jwtConfig = configuration
@@ -42,6 +52,9 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
+    /// <summary>
+    /// Configures the <see cref="GlobalExceptionHandler"/> and adds problem details.
+    /// </summary>
     public static IServiceCollection AddGlobalExceptionHandler(this IServiceCollection services)
     {
         services
@@ -51,6 +64,9 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
+    /// <summary>
+    /// Adds HealthChecks for NpgSql.
+    /// </summary>
     public static IServiceCollection ConfigurePostgreHealthChecks(this IServiceCollection services, IConfiguration configuration)
     {
         services
@@ -60,6 +76,9 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
+    /// <summary>
+    /// Automatically registers every Service's interface that inherits from <see cref="IService"/>.
+    /// </summary>
     public static IServiceCollection AutoRegisterServices(this IServiceCollection services, Assembly assembly)
     {
         var serviceType = typeof(IService);
