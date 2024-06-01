@@ -5,11 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace Identity.Api.Controllers;
 
 [ApiController, Route("[controller]")]
-public class IdentityController(
-    //ILogger<IdentityController> logger,
-    IMediator mediator) : ControllerBase
+public class IdentityController(IMediator mediator) : ControllerBase
 {
-    //private readonly ILogger<IdentityController> _logger = logger;
     private readonly IMediator _mediator = mediator;
 
     [HttpPost, Route("register")]

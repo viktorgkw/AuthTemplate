@@ -4,6 +4,7 @@ using Identity.Application.Features.Authentication;
 using Identity.Domain.Constants;
 using Identity.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using SharedKernel.Configuration;
@@ -15,10 +16,12 @@ using System.Text.RegularExpressions;
 namespace Identity.Infrastructure.Services;
 
 public partial class AuthenticationService(
+    ILogger<AuthenticationService> logger,
     IMapper mapper,
     UserManager<ApplicationUser> userManager,
     JwtConfig jwtConfig) : IAuthenticationService
 {
+    private readonly ILogger<AuthenticationService> _logger = logger;
     private readonly IMapper _mapper = mapper;
     private readonly UserManager<ApplicationUser> _userManager = userManager;
     private readonly JwtConfig _jwtConfig = jwtConfig;
@@ -55,6 +58,7 @@ public partial class AuthenticationService(
         var tokenHandler = new JsonWebTokenHandler();
         var token = tokenHandler.CreateToken(tokenDescriptor);
 
+        _logger.LogInformation($"[LOGIN] -> {loginModel.Email}");
         return new LoginResult(token, AuthenticationMessageConstants.SuccessfulLogin);
     }
 
@@ -77,6 +81,7 @@ public partial class AuthenticationService(
 
         await _userManager.AddToRoleAsync(user, ApplicationRoles.User);
 
+        _logger.LogInformation($"[REGISTER] -> Username: {registerModel.Username}, Email: {registerModel.Email}]");
         return new RegistrationResult(RegistrationStatus.Successful, AuthenticationMessageConstants.SuccessfulRegistration);
     }
 
