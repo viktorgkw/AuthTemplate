@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using SharedKernel.Configuration;
 using SharedKernel.Http;
 using SharedKernel.MediatR;
+using SharedKernel.Models;
 using SharedKernel.Models.Interfaces;
 using System.Reflection;
 using System.Text;
@@ -14,6 +15,12 @@ namespace SharedKernel.Extensions;
 
 public static class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Adds <see cref="RequestCorrelationId"/>.
+    /// </summary>
+    public static IServiceCollection AddRequestCorellationId(this IServiceCollection services)
+        => services.AddScoped<RequestCorrelationId>();
+
     /// <summary>
     /// Adds AutoMapper and MediatR with <see cref="LoggingBehavior{TRequest, TResponse}"/> that logs the request and response with the elapsed seconds.
     /// </summary>

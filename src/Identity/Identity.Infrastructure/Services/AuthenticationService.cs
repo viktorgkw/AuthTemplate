@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using SharedKernel.Configuration;
+using SharedKernel.Models;
 using System.Data;
 using System.Security.Claims;
 using System.Text;
@@ -17,11 +18,13 @@ namespace Identity.Infrastructure.Services;
 
 public partial class AuthenticationService(
     ILogger<AuthenticationService> logger,
+    RequestCorrelationId requestCorrelationId,
     IMapper mapper,
     UserManager<ApplicationUser> userManager,
     JwtConfig jwtConfig) : IAuthenticationService
 {
     private readonly ILogger<AuthenticationService> _logger = logger;
+    private readonly RequestCorrelationId _requestCorrelationId = requestCorrelationId;
     private readonly IMapper _mapper = mapper;
     private readonly UserManager<ApplicationUser> _userManager = userManager;
     private readonly JwtConfig _jwtConfig = jwtConfig;
@@ -31,7 +34,10 @@ public partial class AuthenticationService(
         var user = await _userManager.FindByEmailAsync(loginModel.Email);
 
         if (user is null || !await _userManager.CheckPasswordAsync(user, loginModel.Password))
+        {
+            _logger.LogInformation($"[{_requestCorrelationId.Id}] Invalid Credentials for {loginModel.Email}");
             return new LoginResult(null, AuthenticationMessageConstants.InvalidCredentials);
+        }
 
         var userRoles = await _userManager.GetRolesAsync(user);
 
@@ -58,7 +64,7 @@ public partial class AuthenticationService(
         var tokenHandler = new JsonWebTokenHandler();
         var token = tokenHandler.CreateToken(tokenDescriptor);
 
-        _logger.LogInformation($"[LOGIN] -> {loginModel.Email}");
+        _logger.LogInformation($"[{_requestCorrelationId.Id}] Login success for {loginModel.Email}");
         return new LoginResult(token, AuthenticationMessageConstants.SuccessfulLogin);
     }
 
@@ -69,7 +75,10 @@ public partial class AuthenticationService(
 
         var emailInUse = await _userManager.FindByEmailAsync(registerModel.Email);
         if (emailInUse is not null)
+        {
+            _logger.LogInformation($"[{_requestCorrelationId.Id}] Email in use for {registerModel.Email}");
             return new RegistrationResult(RegistrationStatus.Failed, AuthenticationMessageConstants.EmailInUse);
+        }
 
         var user = _mapper.Map<ApplicationUser>(registerModel);
         var identityResult = await _userManager.CreateAsync(user, registerModel.Password);
@@ -81,7 +90,7 @@ public partial class AuthenticationService(
 
         await _userManager.AddToRoleAsync(user, ApplicationRoles.User);
 
-        _logger.LogInformation($"[REGISTER] -> Username: {registerModel.Username}, Email: {registerModel.Email}]");
+        _logger.LogInformation($"[{_requestCorrelationId.Id}] Register success for Username: {registerModel.Username}, Email: {registerModel.Email}]");
         return new RegistrationResult(RegistrationStatus.Successful, AuthenticationMessageConstants.SuccessfulRegistration);
     }
 

@@ -14,6 +14,7 @@ public static class InfrastructureServiceRegistration
 {
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         => services
+            .AddRequestCorellationId()
             .AutoRegisterServices(Assembly.GetExecutingAssembly())
             .AddPostgreSQL(configuration)
             .ConfigureIdentity(configuration);

@@ -1,13 +1,16 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
+using SharedKernel.Models;
 using System.Diagnostics;
 
 namespace SharedKernel.MediatR;
 
 public class LoggingBehavior<TRequest, TResponse>(
-    ILogger<LoggingBehavior<TRequest, TResponse>> logger) : IPipelineBehavior<TRequest, TResponse>
+    ILogger<LoggingBehavior<TRequest, TResponse>> logger,
+    RequestCorrelationId requestCorrelationId) : IPipelineBehavior<TRequest, TResponse>
 {
     private readonly ILogger<LoggingBehavior<TRequest, TResponse>> _logger = logger;
+    private readonly RequestCorrelationId _requestCorrelationId = requestCorrelationId;
 
     public async Task<TResponse> Handle(
         TRequest request,
@@ -18,20 +21,20 @@ public class LoggingBehavior<TRequest, TResponse>(
 
         try
         {
-            _logger.LogInformation($"[START] -> {typeof(TRequest).Name}");
+            _logger.LogInformation($"[{_requestCorrelationId.Id}] Starting {typeof(TRequest).Name}");
             stopwatch.Start();
 
             var response = await next();
 
             stopwatch.Stop();
-            _logger.LogInformation($"[FINISH] - [{stopwatch.Elapsed.TotalSeconds:F2}] -> {typeof(TResponse).Name}");
+            _logger.LogInformation($"[{_requestCorrelationId.Id}] Finished {typeof(TResponse).Name} in {stopwatch.Elapsed.TotalSeconds:F2}s");
 
             return response;
         }
         catch (Exception ex)
         {
             stopwatch.Stop();
-            _logger.LogError($"[ERROR] - [{stopwatch.Elapsed.TotalSeconds:F2}] -> {typeof(TResponse).Name} -> {ex.Message}");
+            _logger.LogError($"[{_requestCorrelationId.Id}] Error {typeof(TResponse).Name} in [{stopwatch.Elapsed.TotalSeconds:F2}] -> {ex.Message}");
 
             throw;
         }
