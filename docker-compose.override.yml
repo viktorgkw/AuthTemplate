@@ -1,6 +1,6 @@
 services:
   identity.api:
-    container_name: identity_container
+    container_name: identity.api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
@@ -8,9 +8,10 @@ services:
       - "5001:8080"
     depends_on:
       - pgdb
+      - otel-collector
   
   pgdb:
-    container_name: postgres_container
+    container_name: pgdb
     image: postgres
     restart: always
     environment:
@@ -19,17 +20,64 @@ services:
       POSTGRES_DB: m2vira
     ports:
       - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
 
   pgadmin:
-    container_name: pgadmin4_container
+    container_name: pgadmin
     image: dpage/pgadmin4
     restart: always
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@m2vira.com
       PGADMIN_DEFAULT_PASSWORD: admin
     ports:
-      - "8888:80"
+      - "7777:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+  
+  otel-collector:
+    container_name: otel-collector
+    image: otel/opentelemetry-collector:latest
+    command: ["--config=/etc/otel-collector-config.yml"]
+    volumes:
+      - ./config/otel-collector-config.yml:/etc/otel-collector-config.yml
+    ports:
+      - "8888:8888" 
+      - "8889:8889" 
+      - "13133:13133"
+      - "4317:4317"
+
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:latest
+    ports:
+      - 9090:9090
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    restart: unless-stopped
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana-oss:latest
+    ports:
+      - '3000:3000'
+    volumes:
+      - grafana-data:/var/lib/grafana
+    restart: unless-stopped
 
 volumes:
-  data:
-  pgadmin:  
+  pgdata:
+    driver: local
+  pgadmin_data:
+    driver: local
+  prometheus-data:
+    driver: local
+  grafana-data:
+    driver: local
+
+networks:
+  default:
+    driver: bridge

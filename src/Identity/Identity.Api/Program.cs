@@ -1,9 +1,8 @@
-using HealthChecks.UI.Client;
 using Identity.Api;
 using Identity.Application;
 using Identity.Infrastructure;
 using Identity.Infrastructure.Extensions;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using SharedKernel.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
@@ -22,10 +21,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapHealthChecks("/health", new HealthCheckOptions
-{
-    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-});
+app.UseTelemetry();
 
 if (app.Environment.IsDevelopment())
 {

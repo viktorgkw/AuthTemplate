@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using Prometheus;
 using SharedKernel.Configuration;
 using SharedKernel.Http;
 using SharedKernel.MediatR;
@@ -15,6 +18,27 @@ namespace SharedKernel.Extensions;
 
 public static class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Configures everything needed for OpenTelemetry, Grafana and Prometheus.
+    /// </summary>
+    public static IServiceCollection AddOPTL(this IServiceCollection services, IConfiguration configuration)
+    {
+        services
+            .AddOpenTelemetry()
+            .WithMetrics(opt => opt
+                .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("Identity.Api"))
+                .AddMeter("m2vira")
+                .AddAspNetCoreInstrumentation()
+                .AddRuntimeInstrumentation()
+                .AddProcessInstrumentation()
+                .AddOtlpExporter(opts =>
+                {
+                    opts.Endpoint = new Uri(configuration["Optl:Endpoint"]);
+                }));
+
+        return services;
+    }
+
     /// <summary>
     /// Adds <see cref="RequestCorrelationId"/>.
     /// </summary>
@@ -78,7 +102,8 @@ public static class ServiceCollectionExtensions
     {
         services
             .AddHealthChecks()
-            .AddNpgSql(configuration.GetConnectionString("PostgreConnectionString"));
+            .AddNpgSql(configuration.GetConnectionString("PostgreConnectionString"))
+            .ForwardToPrometheus();
 
         return services;
     }

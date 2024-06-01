@@ -17,7 +17,8 @@ public static class InfrastructureServiceRegistration
             .AddRequestCorellationId()
             .AutoRegisterServices(Assembly.GetExecutingAssembly())
             .AddPostgreSQL(configuration)
-            .ConfigureIdentity(configuration);
+            .ConfigureIdentity(configuration)
+            .AddOPTL(configuration);
 
     private static IServiceCollection AddPostgreSQL(this IServiceCollection services, IConfiguration configuration)
     {

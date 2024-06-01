@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
+using SharedKernel.Metrics;
 using SharedKernel.Models;
 using System.Diagnostics;
 
@@ -35,6 +36,8 @@ public class LoggingBehavior<TRequest, TResponse>(
         {
             stopwatch.Stop();
             _logger.LogError($"[{_requestCorrelationId.Id}] Error {typeof(TResponse).Name} in [{stopwatch.Elapsed.TotalSeconds:F2}] -> {ex.Message}");
+
+            AppMetrics.Errors.Inc();
 
             throw;
         }
