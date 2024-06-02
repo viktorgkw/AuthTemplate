@@ -27,6 +27,7 @@ jobs:
           dotnet restore src/Identity/Identity.Application/Identity.Application.csproj
           dotnet restore src/Identity/Identity.Infrastructure/Identity.Infrastructure.csproj
           dotnet restore src/Identity/Identity.Api/Identity.Api.csproj
+          dotnet restore tests/Identity.Infrastructure.Tests/Identity.Infrastructure.Tests.csproj
 
       - name: Build
         run: |
@@ -39,4 +40,4 @@ jobs:
 
       - name: Test
         run: |
-          dotnet test --no-build -verbosity:diag tests/Identity.Infrastructure.Tests/Identity.Infrastructure.Tests.csproj
+          dotnet test --no-build --verbosity normal tests/Identity.Infrastructure.Tests/Identity.Infrastructure.Tests.csproj

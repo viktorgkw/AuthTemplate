@@ -100,14 +100,12 @@ public partial class AuthenticationService(
     }
 
     private static bool IsValidModel(RegisterDto registerModel)
-    {
-        return !string.IsNullOrEmpty(registerModel.Email)
-            && !string.IsNullOrEmpty(registerModel.Username)
-            && !string.IsNullOrEmpty(registerModel.Password)
-            && !string.IsNullOrEmpty(registerModel.FirstName)
-            && !string.IsNullOrEmpty(registerModel.LastName)
-            && !string.IsNullOrEmpty(registerModel.PhoneNumber);
-    }
+        => !string.IsNullOrEmpty(registerModel.Email) &&
+           !string.IsNullOrEmpty(registerModel.Username) &&
+           !string.IsNullOrEmpty(registerModel.Password) &&
+           !string.IsNullOrEmpty(registerModel.FirstName) &&
+           !string.IsNullOrEmpty(registerModel.LastName) &&
+           !string.IsNullOrEmpty(registerModel.PhoneNumber);
 
     private static bool IsEmailValid(string email) => StrongPasswordRegex().Match(email).Success;
 
