@@ -70,6 +70,9 @@ public partial class AuthenticationService(
 
     public async Task<RegistrationResult> Register(RegisterDto registerModel, CancellationToken cancellationToken)
     {
+        if (!IsValidModel(registerModel))
+            return new RegistrationResult(RegistrationStatus.Failed, AuthenticationMessageConstants.NullOrEmpty);
+
         if (!IsEmailValid(registerModel.Email))
             return new RegistrationResult(RegistrationStatus.Failed, AuthenticationMessageConstants.InvalidEmail);
 
@@ -81,17 +84,29 @@ public partial class AuthenticationService(
         }
 
         var user = _mapper.Map<ApplicationUser>(registerModel);
-        var identityResult = await _userManager.CreateAsync(user, registerModel.Password);
 
-        var errors = identityResult.Errors.Select(x => x.Description).ToList();
+        var creationResult = await _userManager.CreateAsync(user, registerModel.Password);
+        var identityErrors = creationResult.Errors.Select(x => x.Description).ToList();
+        if (identityErrors.Count != 0)
+            return new RegistrationResult(RegistrationStatus.Failed, string.Join("\n", identityErrors));
 
-        if (errors.Count != 0)
-            return new RegistrationResult(RegistrationStatus.Failed, string.Join("\n", errors));
-
-        await _userManager.AddToRoleAsync(user, ApplicationRoles.User);
+        var roleResult = await _userManager.AddToRoleAsync(user, ApplicationRoles.User);
+        var roleErrors = roleResult.Errors.Select(x => x.Description).ToList();
+        if (roleErrors.Count != 0)
+            return new RegistrationResult(RegistrationStatus.Failed, string.Join("\n", roleErrors));
 
         _logger.LogInformation($"[{_requestCorrelationId.Id}] Register success for Username: {registerModel.Username}, Email: {registerModel.Email}]");
         return new RegistrationResult(RegistrationStatus.Successful, AuthenticationMessageConstants.SuccessfulRegistration);
+    }
+
+    private static bool IsValidModel(RegisterDto registerModel)
+    {
+        return !string.IsNullOrEmpty(registerModel.Email)
+            && !string.IsNullOrEmpty(registerModel.Username)
+            && !string.IsNullOrEmpty(registerModel.Password)
+            && !string.IsNullOrEmpty(registerModel.FirstName)
+            && !string.IsNullOrEmpty(registerModel.LastName)
+            && !string.IsNullOrEmpty(registerModel.PhoneNumber);
     }
 
     private static bool IsEmailValid(string email) => StrongPasswordRegex().Match(email).Success;

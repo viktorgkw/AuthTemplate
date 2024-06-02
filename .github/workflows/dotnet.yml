@@ -36,5 +36,6 @@ jobs:
           dotnet build --no-restore src/Identity/Identity.Infrastructure/Identity.Infrastructure.csproj
           dotnet build --no-restore src/Identity/Identity.Api/Identity.Api.csproj
 
-      # - name: Test
-      #   run: dotnet test --no-build --verbosity normal **/*.csproj
+      - name: Test
+        run: |
+          dotnet test --no-build --verbosity normal tests/Identity.Infrastructure.Tests/Identity.Infrastructure.Tests.csproj
