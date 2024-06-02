@@ -25,6 +25,11 @@ app.UseTelemetry();
 
 if (app.Environment.IsDevelopment())
 {
+    app.UseCors(builder => builder
+        .AllowAnyOrigin()
+        .AllowAnyHeader()
+        .AllowAnyMethod());
+
     await app.ApplyMigrations();
     await app.InitializeRoles();
 }
