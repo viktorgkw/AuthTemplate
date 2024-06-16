@@ -1,2 +1,8 @@
-# m2vira-core
-This is the official repository for m2vira's core functionality.
+# AuthTemplate
+
+- Identity Microservice on .NET 8
+- GitHub Actions .NET workflow
+- Prometheus, OTEL, Elastic, Kibana, Grafana, PostgreSQL, pgAdmin
+- DDD, CQRS, MediatR
+- JWT, HealthChecks
+- Identity Microservice Unit Tests
